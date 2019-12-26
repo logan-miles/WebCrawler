@@ -33,5 +33,19 @@ namespace WebCrawler.Tests
             Page page = new Page(new Uri("https://www.somesite.org/unlink"), sourceHtml);
             page.GetInternalLinks().Count().Should().Be(linkCount, message);
         }
+
+        [Theory]
+        [InlineData("<html><head></head><body><a href=\"https://www.somesite.org\">SomeLink</a><a href=\"https://www.someothersite.org/link\">SomeLink2</a></body>",1, "1 internal 1 external returns 1")]
+        public void GetExternalLinks_ShouldReturnNumberOfExternal(string sourceHtml, int linkCount, string message) {
+            Page page = new Page(new Uri("https://www.somesite.org/unlink"), sourceHtml);
+            page.GetExternalLinks().Count().Should().Be(linkCount, message);
+        }
+
+        [Theory]
+        [InlineData("<html><head></head><body><a href=\"https://www.somesite.org\">SomeLink</a><img src=\"https://www.somesite.org/image.gif\"></img></body>",1, "1 link 1 image returns 1 image")]
+        public void GetImages_ShouldReturnNumberOfImages(string sourceHtml, int imageCount, string message) {
+            Page page = new Page(new Uri("https://www.somesite.org/unlink"), sourceHtml);
+            page.GetImages().Count().Should().Be(imageCount, message);
+        }
     }
 }
