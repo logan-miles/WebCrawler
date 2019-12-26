@@ -8,12 +8,12 @@ namespace WebCrawler.Lib
     public class Page
     {
         private HtmlDocument Document;
-        private Uri BaseUri;
+        public Uri Uri;
 
-        public Page(Uri baseUri, string html) {
+        public Page(Uri uri, string html) {
             Document = new HtmlDocument();
             Document.LoadHtml(html);
-            BaseUri = baseUri;
+            Uri = uri;
         }
 
         public IEnumerable<Uri> GetLinks() {
@@ -28,12 +28,12 @@ namespace WebCrawler.Lib
 
         public IEnumerable<Uri> GetInternalLinks()
         {
-            return GetLinks().Where(u => BaseUri.IsBaseOf(u));
+            return GetLinks().Where(u => Uri.IsBaseOf(u));
         }
 
         public IEnumerable<Uri> GetExternalLinks()
         {
-            return GetLinks().Where(u => !BaseUri.IsBaseOf(u));
+            return GetLinks().Where(u => !Uri.IsBaseOf(u));
         }
 
         public IEnumerable<string> GetImages()
@@ -48,7 +48,7 @@ namespace WebCrawler.Lib
 
         private Uri GetAbsoluteUriFromHref(string href) {
             Uri uri = new Uri(href, UriKind.RelativeOrAbsolute);
-            uri = uri.IsAbsoluteUri ? uri : new Uri(BaseUri, uri);
+            uri = uri.IsAbsoluteUri ? uri : new Uri(Uri, uri);
             
             return uri;
         }
@@ -57,6 +57,12 @@ namespace WebCrawler.Lib
             if (href.Contains('?'))
                 return href.Split('?')[0];
             return href;
+        }
+
+        public string Print()
+        {
+            PageDto pageDto = new PageDto(this);
+            return pageDto.Print();
         }
     }
 }

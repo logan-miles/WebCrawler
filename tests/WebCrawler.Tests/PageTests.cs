@@ -47,5 +47,14 @@ namespace WebCrawler.Tests
             Page page = new Page(new Uri("https://www.somesite.org/unlink"), sourceHtml);
             page.GetImages().Count().Should().Be(imageCount, message);
         }
+
+        [Theory]
+        [InlineData("<html><head></head><body><a href=\"https://www.somesite.org/link\">SomeLink</a><a href=\"https://www.someothersite.org/link\">SomeLink</a><img src=\"https://www.somesite.org/image.gif\"></img></body>"
+            ,"{\n  \"uri\": \"https://www.somesite.org/\",\n  \"internalLinks\": [\n    \"https://www.somesite.org/link\"\n  ],\n  \"externalLinks\": [\n    \"https://www.somesite.org/link\"\n  ],\n  \"images\": [\n    \"https://www.somesite.org/image.gif\"\n  ]\n}")]
+        public void Print_ShouldReturnSerializedDto(string sourceHtml, string serializedDto) {
+            Page page = new Page(new Uri("https://www.somesite.org/"), sourceHtml);
+            var printedPage = page.Print();
+            printedPage.Should().Be(serializedDto);
+        }
     }
 }
