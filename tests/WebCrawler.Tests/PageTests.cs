@@ -9,12 +9,21 @@ namespace WebCrawler.Tests
 {
     public class PageTests
     {
-        [Fact]
-        public void GetLinks_OneLink_ShouldReturnLinks()
+        [Theory]
+        [InlineData("<html><head></head><body><a href=\"https://www.somesite.org\">SomeLink</a></body>",1)]
+        [InlineData("<html><head></head><body><a href=\"https://www.somesite.org\">SomeLink</a><img src=\"https://www.somesite.org/image.gif\"></img></body>",1)]
+        [InlineData("<html><head></head><body><a href=\"https://www.somesite.org\">SomeLink</a><a href=\"https://www.somesite.org/link\">SomeLink2</a></body>",2)]
+        public void GetLinks_NoFilter_ShouldReturnRightNumberOfLinks(string sourceHtml, int linkCount)
         {
-            string sourceHtml = "<html><head></head><body><a href=\"https://www.somesite.org\"></body>";
-            Page page = new Page(sourceHtml);
-            page.GetLinks().Count().Should().Be(1);
+            Page page = new Page(new Uri("https://www.somesite.org"), sourceHtml);
+            page.GetLinks().Count().Should().Be(linkCount);
+        }
+
+        [Fact]
+        public void GetInternalLinks_OneInternal_ShouldReturnOneLink() {
+            string sourceHtml = "<html><head></head><body><a href=\"https://www.somesite.org\">SomeLink</a></body>";
+            Page page = new Page(new Uri("https://www.somesite.org"), sourceHtml);
+            page.GetInternalLinks().Count().Should().Be(1);
         }
     }
 }

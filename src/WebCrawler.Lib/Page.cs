@@ -7,17 +7,30 @@ namespace WebCrawler.Lib
 {
     public class Page
     {
-        HtmlDocument document;
-        public Page(string html) {
-            document = new HtmlDocument();
-            document.LoadHtml(html);
+        private HtmlDocument Document;
+        private Uri BaseUri;
+
+        public Page(Uri baseUri, string html) {
+            Document = new HtmlDocument();
+            Document.LoadHtml(html);
+            BaseUri = baseUri;
         }
 
         public IEnumerable<string> GetLinks() {
-            var links = document.DocumentNode.SelectNodes("//a[@href]")
+            var links = Document.DocumentNode.SelectNodes("//a[@href]")
                 .Select(n => n.Attributes["href"].Value)
                 .ToList();
             return links;
+        }
+
+        public IEnumerable<string> GetInternalLinks()
+        {
+            var links = GetLinks()
+                            .Select(l => new Uri(l))
+                            .Select(u => u.IsAbsoluteUri ? u : new Uri(BaseUri, u))
+                            .Distinct()
+                            .Where(u => BaseUri.IsBaseOf(u));
+            return links.Select(u => u.ToString());
         }
     }
 }
