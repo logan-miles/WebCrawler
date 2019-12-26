@@ -9,27 +9,43 @@ namespace WebCrawler.Lib
     {
         private HtmlDocument Document;
         private Uri BaseUri;
-        
+
+        private IEnumerable<Uri> Links;
+        private IEnumerable<Uri> InternalLinks;
+        private IEnumerable<Uri> ExternalLinks;
+
         public Page(Uri baseUri, string html) {
             Document = new HtmlDocument();
             Document.LoadHtml(html);
             BaseUri = baseUri;
         }
 
-        public IEnumerable<string> GetLinks() {
+        public IEnumerable<Uri> GetLinks() {
             var links = Document.DocumentNode.SelectNodes("//a[@href]")
                 .Select(n => n.Attributes["href"].Value)
+                .Select(h => StripQueryString(h))
+                .Select(h => GetAbsoluteUriFromHref(h))
+                .Distinct()
                 .ToList();
             return links;
         }
 
-        public IEnumerable<string> GetInternalLinks()
+        public IEnumerable<Uri> GetInternalLinks()
         {
-            var links = GetLinks().Select(l => new Uri(l, UriKind.RelativeOrAbsolute));
-            links = links.Select(u => u.IsAbsoluteUri ? u : new Uri(BaseUri, u))
-                            .Distinct()
-                            .Where(u => BaseUri.IsBaseOf(u));
-            return links.Select(u => u.ToString());
+            return GetLinks().Where(u => BaseUri.IsBaseOf(u));
+        }
+
+        private Uri GetAbsoluteUriFromHref(string href) {
+            Uri uri = new Uri(href, UriKind.RelativeOrAbsolute);
+            uri = uri.IsAbsoluteUri ? uri : new Uri(BaseUri, uri);
+            
+            return uri;
+        }
+
+        private static string StripQueryString(string href) {
+            if (href.Contains('?'))
+                return href.Split('?')[0];
+            return href;
         }
     }
 }
