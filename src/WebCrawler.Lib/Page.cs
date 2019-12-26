@@ -9,7 +9,7 @@ namespace WebCrawler.Lib
     {
         private HtmlDocument Document;
         private Uri BaseUri;
-
+        
         public Page(Uri baseUri, string html) {
             Document = new HtmlDocument();
             Document.LoadHtml(html);
@@ -25,9 +25,8 @@ namespace WebCrawler.Lib
 
         public IEnumerable<string> GetInternalLinks()
         {
-            var links = GetLinks()
-                            .Select(l => new Uri(l))
-                            .Select(u => u.IsAbsoluteUri ? u : new Uri(BaseUri, u))
+            var links = GetLinks().Select(l => new Uri(l, UriKind.RelativeOrAbsolute));
+            links = links.Select(u => u.IsAbsoluteUri ? u : new Uri(BaseUri, u))
                             .Distinct()
                             .Where(u => BaseUri.IsBaseOf(u));
             return links.Select(u => u.ToString());
