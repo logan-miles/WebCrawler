@@ -28,22 +28,22 @@ namespace WebCrawler.Lib
 
         public IEnumerable<Uri> GetInternalLinks()
         {
-            return GetLinks().Where(u => Uri.IsBaseOf(u));
+            return GetLinks()?.Where(u => Uri.IsBaseOf(u)) ?? new List<Uri>();
         }
 
         public IEnumerable<Uri> GetExternalLinks()
         {
-            return GetLinks().Where(u => !Uri.IsBaseOf(u));
+            return GetLinks()?.Where(u => !Uri.IsBaseOf(u)) ?? new List<Uri>();
         }
 
         public IEnumerable<string> GetImages()
         {
             var links = Document.DocumentNode.SelectNodes("//img[@src]")
-                    .Select(n => n.Attributes["src"].Value)
-                    .Distinct()
-                    .ToList();
+                    ?.Select(n => n.Attributes["src"].Value)
+                    ?.Distinct()
+                    ?.ToList();
             
-            return links;
+            return links ?? new List<string>();
         }
 
         private Uri GetAbsoluteUriFromHref(string href) {

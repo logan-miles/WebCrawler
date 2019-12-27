@@ -14,13 +14,13 @@ namespace WebCrawler.Lib
         public PageDto(Page page) {
             Uri = page.Uri.AbsoluteUri;
             InternalLinks = page.GetInternalLinks()
-                .Select(u => u.AbsoluteUri)
-                .ToList();
+                ?.Select(u => u.AbsoluteUri)
+                ?.ToList() ?? new List<string>();
             ExternalLinks = page.GetInternalLinks()
-                .Select(u => u.AbsoluteUri)
-                .ToList();
+                ?.Select(u => u.AbsoluteUri)
+                ?.ToList() ?? new List<string>();
             Images = page.GetImages()
-                .ToList();
+                ?.ToList() ?? new List<string>();
         }
 
         public string Print()
