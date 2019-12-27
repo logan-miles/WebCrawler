@@ -40,12 +40,9 @@ namespace WebCrawler.Lib
 
                 visitedPages.Add(target.AbsoluteUri);
                 
-                var client = factory.CreateClient();
-                string content = await client.GetStringAsync(target);
-                Page page = new Page(target, content);
-                
-                string y = page.Print();
-                map.AppendLine(y);
+                Page page = await BuildPage(target);
+                AddPageToMap(page);
+
                 var x = page.GetInternalLinks().ToList();
                 x.ForEach(l => pagesToVisit.Enqueue(l));
 
@@ -54,6 +51,16 @@ namespace WebCrawler.Lib
             return visitedPages;
         }
         
+        private async Task<Page> BuildPage(Uri target) {
+            var client = factory.CreateClient();
+            string content = await client.GetStringAsync(target);
+            
+            return new Page(target, content);
+        }
+
+        private void AddPageToMap(Page page) {
+            map.AppendLine(page.Print());
+        }
 
         private bool SitesInQueue() {
             return pagesToVisit.Count > 0;
