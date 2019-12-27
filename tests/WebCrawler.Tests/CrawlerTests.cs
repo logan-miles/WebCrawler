@@ -31,7 +31,7 @@ namespace WebCrawler.Tests
         [InlineData("https://www.logan.com/loop", 1, "Loop should only hit once")]
         [InlineData("https://www.logan.com/threeWithDuplicate1", 3, "Three pages all with circular references")]
         private void CrawlTest(string uri, int length, string message) {
-            Crawler crawler = new Crawler(factory);
+            Crawler crawler = new Crawler(factory, new StringPrinter());
             var result = crawler.Crawl(uri).Result;
             result.Count.Should().Be(length, message);
         }
@@ -40,7 +40,7 @@ namespace WebCrawler.Tests
         [Theory]
         [InlineData("https://www.logan.com", "{\n  \"uri\": \"https://www.logan.com/\",\n  \"internalLinks\": [\n    \"https://www.logan.com/about\"\n  ],\n  \"externalLinks\": [\n    \"https://www.logan.com/about\"\n  ],\n  \"images\": []\n}\n{\n  \"uri\": \"https://www.logan.com/about\",\n  \"internalLinks\": [],\n  \"externalLinks\": [],\n  \"images\": []\n}\n")]
         private async void CrawlPrintTest(string uri, string expected) {
-            Crawler crawler = new Crawler(factory);
+            Crawler crawler = new Crawler(factory, new StringPrinter());
             var result = await crawler.Crawl(uri);
             crawler.Print().Should().Be(expected);
         }

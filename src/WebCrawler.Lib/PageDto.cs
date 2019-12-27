@@ -16,7 +16,7 @@ namespace WebCrawler.Lib
             InternalLinks = page.GetInternalLinks()
                 ?.Select(u => u.AbsoluteUri)
                 ?.ToList() ?? new List<string>();
-            ExternalLinks = page.GetInternalLinks()
+            ExternalLinks = page.GetExternalLinks()
                 ?.Select(u => u.AbsoluteUri)
                 ?.ToList() ?? new List<string>();
             Images = page.GetImages()

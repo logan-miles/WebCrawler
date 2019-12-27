@@ -13,9 +13,11 @@ namespace WebCrawler.ConsoleApp
         {
             var serviceProvider = new ServiceCollection()
                 .AddHttpClient()
+                .AddSingleton<IMapPrinter, FilePrinter>()
                 .BuildServiceProvider();
 
-            Crawler crawler = new Crawler(serviceProvider.GetService<IHttpClientFactory>());
+            Crawler crawler = new Crawler(serviceProvider.GetService<IHttpClientFactory>()
+                , serviceProvider.GetService<IMapPrinter>());
             await crawler.Crawl(args[0]);
             string s = crawler.Print();
             Console.WriteLine(s);

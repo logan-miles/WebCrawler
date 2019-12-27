@@ -2,6 +2,6 @@ namespace WebCrawler.Lib
 {
     public interface IMapPrinter
     {
-         void Print();
+        string Print(Crawler crawler);
     }
 }

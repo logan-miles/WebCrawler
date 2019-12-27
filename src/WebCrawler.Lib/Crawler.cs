@@ -10,17 +10,18 @@ namespace WebCrawler.Lib
     public class Crawler
     {
         private IHttpClientFactory factory;
-
+        private IMapPrinter printer;
         private HashSet<string> visitedPages;
         private Queue<Uri> pagesToVisit;
         private StringBuilder map;
 
-        public Crawler(IHttpClientFactory factory) {
+        public Crawler(IHttpClientFactory factory, IMapPrinter printer) {
             visitedPages = new HashSet<string>();
             pagesToVisit = new Queue<Uri>();
             map = new StringBuilder();
             
             this.factory = factory;
+            this.printer = printer;
         }
 
         public async Task<HashSet<string>> Crawl(string uri) {
@@ -91,6 +92,10 @@ namespace WebCrawler.Lib
         }
 
         public string Print() {
+            return printer.Print(this);
+        }
+
+        public string GetMap() {
             return map.ToString();
         }
     }
