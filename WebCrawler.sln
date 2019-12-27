@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A2C5011F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.Tests", "tests\WebCrawler.Tests\WebCrawler.Tests.csproj", "{C3859DAC-4947-4945-86FE-E53D5A9276C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.ConsoleApp", "src\WebCrawler.ConsoleApp\WebCrawler.ConsoleApp.csproj", "{C7068893-E358-4951-8EC6-4F680E06C47E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,9 +50,22 @@ Global
 		{C3859DAC-4947-4945-86FE-E53D5A9276C0}.Release|x64.Build.0 = Release|Any CPU
 		{C3859DAC-4947-4945-86FE-E53D5A9276C0}.Release|x86.ActiveCfg = Release|Any CPU
 		{C3859DAC-4947-4945-86FE-E53D5A9276C0}.Release|x86.Build.0 = Release|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Debug|x64.Build.0 = Debug|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Debug|x86.Build.0 = Debug|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Release|x64.ActiveCfg = Release|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Release|x64.Build.0 = Release|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Release|x86.ActiveCfg = Release|Any CPU
+		{C7068893-E358-4951-8EC6-4F680E06C47E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A37580CF-408D-40E1-95E9-6C86F4A340C2} = {ECAD67E6-BF72-4837-B68E-6F21BE9160DD}
 		{C3859DAC-4947-4945-86FE-E53D5A9276C0} = {A2C5011F-6DE1-444D-92CC-A9FA37A0AF24}
+		{C7068893-E358-4951-8EC6-4F680E06C47E} = {ECAD67E6-BF72-4837-B68E-6F21BE9160DD}
 	EndGlobalSection
 EndGlobal

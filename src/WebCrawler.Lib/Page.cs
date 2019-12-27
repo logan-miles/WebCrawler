@@ -18,12 +18,12 @@ namespace WebCrawler.Lib
 
         public IEnumerable<Uri> GetLinks() {
             var links = Document.DocumentNode.SelectNodes("//a[@href]")
-                    .Select(n => n.Attributes["href"].Value)
-                    .Select(h => StripQueryString(h))
-                    .Select(h => GetAbsoluteUriFromHref(h))
-                    .Distinct()
-                    .ToList();
-            return links;
+                    ?.Select(n => n.Attributes["href"].Value)
+                    ?.Select(h => StripQueryString(h))
+                    ?.Select(h => GetAbsoluteUriFromHref(h))
+                    ?.Distinct()
+                    ?.ToList();
+            return links ?? new List<Uri>();
         }
 
         public IEnumerable<Uri> GetInternalLinks()

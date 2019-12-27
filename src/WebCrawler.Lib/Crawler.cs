@@ -68,13 +68,16 @@ namespace WebCrawler.Lib
         
         private async Task<Page> BuildPage(Uri target) {
             var client = factory.CreateClient();
-            string content = await client.GetStringAsync(target);
+            string content = "<html><body><p>Empty</body></html>";
+            try {
+                content = await client.GetStringAsync(target);
+            } catch (Exception e) {}
             
             return new Page(target, content);
         }
 
         private void AddPageToMap(Page page) {
-            map.AppendLine(page.Print());
+            map.AppendLine(page.Print() ?? "");
         }
 
         private void AddInternalLinksToQueue(Page page) {
