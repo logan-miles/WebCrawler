@@ -38,9 +38,11 @@ namespace WebCrawler.Tests
 
 
         [Theory]
-        [InlineData("https://www.logan.com", "abc")]
-        private void CrawlPrintTest(string uri, string expected) {
-
+        [InlineData("https://www.logan.com", "{\n  \"uri\": \"https://www.logan.com/\",\n  \"internalLinks\": [\n    \"https://www.logan.com/about\"\n  ],\n  \"externalLinks\": [\n    \"https://www.logan.com/about\"\n  ],\n  \"images\": []\n}\n{\n  \"uri\": \"https://www.logan.com/about\",\n  \"internalLinks\": [],\n  \"externalLinks\": [],\n  \"images\": []\n}\n")]
+        private async void CrawlPrintTest(string uri, string expected) {
+            Crawler crawler = new Crawler(factory);
+            var result = await crawler.Crawl(uri);
+            crawler.Print().Should().Be(expected);
         }
 
         private void SetupHandler(Mock<HttpMessageHandler> handler) {
