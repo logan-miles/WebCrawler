@@ -23,32 +23,47 @@ namespace WebCrawler.Lib
             this.factory = factory;
         }
 
-        private bool Validate(string uri) {
-            return Uri.IsWellFormedUriString(uri, UriKind.Absolute);
-        }
-
         public async Task<HashSet<string>> Crawl(string uri) {
-            if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
-                throw new Exception("Invalid URL, Jerk!");
-
-            pagesToVisit.Enqueue(new Uri(uri));
+            ValidateUri(uri);
+            SeedQueue(uri);
 
             do {                
-                Uri target = pagesToVisit.Dequeue();
-                if (visitedPages.Contains(target.AbsoluteUri))
-                    continue;
-
-                visitedPages.Add(target.AbsoluteUri);
-                
-                Page page = await BuildPage(target);
-                AddPageToMap(page);
-
-                var x = page.GetInternalLinks().ToList();
-                x.ForEach(l => pagesToVisit.Enqueue(l));
+                await ProcessQueue();
 
             } while (SitesInQueue());
 
             return visitedPages;
+        }
+
+        private bool Validate(string uri) {
+            return Uri.IsWellFormedUriString(uri, UriKind.Absolute);
+        }
+
+        private bool NotAlreadyVisited(Uri target) {
+            return !visitedPages.Contains(target.AbsoluteUri);
+        }
+
+        private void SeedQueue(string uri) {
+            pagesToVisit.Enqueue(new Uri(uri));
+        }
+
+        public void ValidateUri(string uri) {
+            if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                throw new Exception("Invalid URL, Jerk!");
+        }
+
+        public async Task ProcessQueue() {
+            Uri target = pagesToVisit.Dequeue();
+            if (NotAlreadyVisited(target))   
+                await ProcessUri(target);
+        }
+
+        private async Task ProcessUri(Uri target) {
+            visitedPages.Add(target.AbsoluteUri);
+                
+                Page page = await BuildPage(target);
+                AddPageToMap(page);
+                AddInternalLinksToQueue(page);
         }
         
         private async Task<Page> BuildPage(Uri target) {
@@ -62,8 +77,18 @@ namespace WebCrawler.Lib
             map.AppendLine(page.Print());
         }
 
+        private void AddInternalLinksToQueue(Page page) {
+            page.GetInternalLinks()
+                .ToList()
+                .ForEach(l => pagesToVisit.Enqueue(l));
+        }
+
         private bool SitesInQueue() {
             return pagesToVisit.Count > 0;
+        }
+
+        public string Print() {
+            return map.ToString();
         }
     }
 }
