@@ -12,16 +12,13 @@ namespace WebCrawler.ConsoleApp
         static async Task Main(string[] args)
         {
             var serviceProvider = new ServiceCollection()
-                .AddLogging()
                 .AddHttpClient()
                 .BuildServiceProvider();
 
             Crawler crawler = new Crawler(serviceProvider.GetService<IHttpClientFactory>());
-            await crawler.Crawl("https://www.ronjeffries.com");
+            await crawler.Crawl(args[0]);
             string s = crawler.Print();
             Console.WriteLine(s);
         }
-
-
     }
 }

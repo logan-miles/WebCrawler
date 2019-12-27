@@ -17,7 +17,7 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/src/WebCrawler.ConsoleApp/bin/Debug/netcoreapp3.1/WebCrawler.ConsoleApp.dll",
-            "args": [],
+            "args": ["http://somesite.org"],
             "cwd": "${workspaceFolder}/src/WebCrawler.ConsoleApp",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
