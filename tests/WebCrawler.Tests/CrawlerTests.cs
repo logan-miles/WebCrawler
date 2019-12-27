@@ -1,9 +1,9 @@
-using Xunit;
-using Moq;
-using System.Net.Http;
-using Moq.Contrib.HttpClient;
 using FluentAssertions;
-using System.Collections.Generic;
+using Moq;
+using Moq.Contrib.HttpClient;
+using System.Net.Http;
+using Xunit;
+
 using WebCrawler.Lib;
 
 namespace WebCrawler.Tests
@@ -34,6 +34,13 @@ namespace WebCrawler.Tests
             Crawler crawler = new Crawler(factory);
             var result = crawler.Crawl(uri).Result;
             result.Count.Should().Be(length, message);
+        }
+
+
+        [Theory]
+        [InlineData("https://www.logan.com", "abc")]
+        private void CrawlPrintTest(string uri, string expected) {
+
         }
 
         private void SetupHandler(Mock<HttpMessageHandler> handler) {

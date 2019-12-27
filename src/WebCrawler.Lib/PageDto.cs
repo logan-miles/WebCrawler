@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Linq;
+using System.Text.Json;
 
 namespace WebCrawler.Lib
 {

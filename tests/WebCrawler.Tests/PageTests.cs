@@ -1,9 +1,9 @@
-using System;
-using Xunit;
 using FluentAssertions;
-using WebCrawler.Lib;
-using System.Collections.Generic;
+using System;
 using System.Linq;
+using Xunit;
+
+using WebCrawler.Lib;
 
 namespace WebCrawler.Tests
 {
