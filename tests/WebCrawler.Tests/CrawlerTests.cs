@@ -1,15 +1,12 @@
+using System.Net.Http;
 using FluentAssertions;
 using Moq;
 using Moq.Contrib.HttpClient;
-using System.Net.Http;
+using WebCrawler.Lib;
 using Xunit;
 
-using WebCrawler.Lib;
-
-namespace WebCrawler.Tests
-{
-    public class CrawlerTests
-    {
+namespace WebCrawler.Tests {
+    public class CrawlerTests {
         private IHttpClientFactory factory;
         public CrawlerTests() {
             var handler = new Mock<HttpMessageHandler>();
@@ -36,9 +33,8 @@ namespace WebCrawler.Tests
             result.Count.Should().Be(length, message);
         }
 
-
         [Theory]
-        [InlineData("https://www.logan.com", "{\n  \"uri\": \"https://www.logan.com/\",\n  \"internalLinks\": [\n    \"https://www.logan.com/about\"\n  ],\n  \"externalLinks\": [\n    \"https://www.logan.com/about\"\n  ],\n  \"images\": []\n}\n{\n  \"uri\": \"https://www.logan.com/about\",\n  \"internalLinks\": [],\n  \"externalLinks\": [],\n  \"images\": []\n}\n")]
+        [InlineData("https://www.logan.com", "{\n  \"uri\": \"https://www.logan.com/\",\n  \"internalLinks\": [\n    \"https://www.logan.com/about\"\n  ],\n  \"externalLinks\": [\n    \"https://www.google.com/\"\n  ],\n  \"images\": []\n}\n{\n  \"uri\": \"https://www.logan.com/about\",\n  \"internalLinks\": [],\n  \"externalLinks\": [\n    \"https://www.google.com/\"\n  ],\n  \"images\": []\n}\n")]
         private async void CrawlPrintTest(string uri, string expected) {
             Crawler crawler = new Crawler(factory, new StringPrinter());
             var result = await crawler.Crawl(uri);
