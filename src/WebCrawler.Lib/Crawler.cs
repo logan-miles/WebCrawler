@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -9,25 +10,25 @@ namespace WebCrawler.Lib {
     public class Crawler {
         private IHttpClientFactory factory;
         private IMapPrinter printer;
-        private HashSet<string> visitedPages;
-        private Queue<Uri> pagesToVisit;
+        private ConcurrentDictionary<string, byte> visitedPages;
+        private ConcurrentQueue<Uri> pagesToVisit;
         private StringBuilder map;
         private string uri;
 
-        public Uri targetUri;
+        public Uri targetSite;
 
         public Crawler(string uri, IHttpClientFactory factory, IMapPrinter printer) {
-            visitedPages = new HashSet<string>();
-            pagesToVisit = new Queue<Uri>();
+            visitedPages = new ConcurrentDictionary<string, byte>();
+            pagesToVisit = new ConcurrentQueue<Uri>();
             map = new StringBuilder();
 
             this.uri = uri;
-            this.targetUri = new Uri(uri);
+            this.targetSite = new Uri(uri);
             this.factory = factory;
             this.printer = printer;
         }
 
-        public async Task<HashSet<string>> Crawl() {
+        public async Task<ConcurrentDictionary<string, byte>> Crawl() {
             ValidateUri();
             SeedQueue();
 
@@ -40,7 +41,7 @@ namespace WebCrawler.Lib {
         }
 
         private bool NotAlreadyVisited(Uri target) {
-            return !visitedPages.Contains(target.AbsoluteUri);
+            return !visitedPages.ContainsKey(target.AbsoluteUri);
         }
 
         private void SeedQueue() {
@@ -53,13 +54,15 @@ namespace WebCrawler.Lib {
         }
 
         public async Task ProcessQueue() {
-            Uri target = pagesToVisit.Dequeue();
+            // Uri target = pagesToVisit.();
+            bool success = pagesToVisit.TryDequeue(out Uri target);
             if (NotAlreadyVisited(target))
                 await ProcessUri(target);
         }
 
         private async Task ProcessUri(Uri target) {
-            visitedPages.Add(target.AbsoluteUri);
+            // visitedPages.Add(target.AbsoluteUri, new Byte);
+            visitedPages.TryAdd(target.AbsoluteUri, new byte());
 
             Page page = await BuildPage(target);
             AddPageToMap(page);
@@ -72,14 +75,16 @@ namespace WebCrawler.Lib {
             try {
                 content = await client.GetStringAsync(target);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
+                e.ToString();
             }
 
             return new Page(target, content);
         }
 
         private void AddPageToMap(Page page) {
-            map.AppendLine(page.Print() ?? "");
+            lock(map) {
+                map.AppendLine(page.Print() ?? "");
+            }
         }
 
         private void AddInternalLinksToQueue(Page page) {
