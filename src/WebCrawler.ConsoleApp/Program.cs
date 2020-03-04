@@ -13,10 +13,9 @@ namespace WebCrawler.ConsoleApp {
                 .AddSingleton<IMapPrinter, FilePrinter>()
                 .BuildServiceProvider();
 
-            Crawler crawler = new Crawler(serviceProvider.GetService<IHttpClientFactory>(), serviceProvider.GetService<IMapPrinter>());
-            await crawler.Crawl(args[0]);
-            //string s = crawler.Print();
-            Console.WriteLine(crawler.Print());
+            Crawler crawler = new Crawler(args[0], serviceProvider.GetService<IHttpClientFactory>(), serviceProvider.GetService<IMapPrinter>());
+            await crawler.Crawl();
+            crawler.Print();
         }
     }
 }

@@ -12,19 +12,21 @@ namespace WebCrawler.Lib {
         private HashSet<string> visitedPages;
         private Queue<Uri> pagesToVisit;
         private StringBuilder map;
+        private string uri;
 
-        public Crawler(IHttpClientFactory factory, IMapPrinter printer) {
+        public Crawler(string uri, IHttpClientFactory factory, IMapPrinter printer) {
             visitedPages = new HashSet<string>();
             pagesToVisit = new Queue<Uri>();
             map = new StringBuilder();
 
+            this.uri = uri;
             this.factory = factory;
             this.printer = printer;
         }
 
-        public async Task<HashSet<string>> Crawl(string uri) {
-            ValidateUri(uri);
-            SeedQueue(uri);
+        public async Task<HashSet<string>> Crawl() {
+            ValidateUri();
+            SeedQueue();
 
             do {
                 await ProcessQueue();
@@ -34,19 +36,15 @@ namespace WebCrawler.Lib {
             return visitedPages;
         }
 
-        private bool Validate(string uri) {
-            return Uri.IsWellFormedUriString(uri, UriKind.Absolute);
-        }
-
         private bool NotAlreadyVisited(Uri target) {
             return !visitedPages.Contains(target.AbsoluteUri);
         }
 
-        private void SeedQueue(string uri) {
+        private void SeedQueue() {
             pagesToVisit.Enqueue(new Uri(uri));
         }
 
-        public void ValidateUri(string uri) {
+        public void ValidateUri() {
             if (!Uri.IsWellFormedUriString(uri, UriKind.Absolute))
                 throw new Exception("Invalid URL, Jerk!");
         }
