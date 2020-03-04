@@ -14,12 +14,15 @@ namespace WebCrawler.Lib {
         private StringBuilder map;
         private string uri;
 
+        public Uri targetUri;
+
         public Crawler(string uri, IHttpClientFactory factory, IMapPrinter printer) {
             visitedPages = new HashSet<string>();
             pagesToVisit = new Queue<Uri>();
             map = new StringBuilder();
 
             this.uri = uri;
+            this.targetUri = new Uri(uri);
             this.factory = factory;
             this.printer = printer;
         }
