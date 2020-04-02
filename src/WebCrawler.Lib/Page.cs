@@ -9,11 +9,13 @@ namespace WebCrawler.Lib
     {
         private HtmlDocument Document;
         public Uri Uri;
+        private Uri BaseUri;
 
         public Page(Uri uri, string html) {
             Document = new HtmlDocument();
             Document.LoadHtml(html);
             Uri = uri;
+            BaseUri = new Uri(uri.GetLeftPart(System.UriPartial.Authority));
         }
 
         public IEnumerable<Uri> GetLinks() {
@@ -28,12 +30,12 @@ namespace WebCrawler.Lib
 
         public IEnumerable<Uri> GetInternalLinks()
         {
-            return GetLinks()?.Where(u => Uri.IsBaseOf(u)) ?? new List<Uri>();
+            return GetLinks()?.Where(u => BaseUri.IsBaseOf(u)) ?? new List<Uri>();
         }
 
         public IEnumerable<Uri> GetExternalLinks()
         {
-            return GetLinks()?.Where(u => !Uri.IsBaseOf(u)) ?? new List<Uri>();
+            return GetLinks()?.Where(u => !BaseUri.IsBaseOf(u)) ?? new List<Uri>();
         }
 
         public IEnumerable<string> GetImages()
@@ -48,7 +50,9 @@ namespace WebCrawler.Lib
 
         private Uri GetAbsoluteUriFromHref(string href) {
             Uri uri = new Uri(href, UriKind.RelativeOrAbsolute);
-            uri = uri.IsAbsoluteUri ? uri : new Uri(Uri, uri);
+            if (!uri.IsWellFormedOriginalString())
+                return Uri;
+            uri = uri.IsAbsoluteUri ? uri : new Uri(BaseUri, uri);
             
             return uri;
         }
