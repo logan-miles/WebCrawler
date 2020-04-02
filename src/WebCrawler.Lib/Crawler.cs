@@ -34,7 +34,6 @@ namespace WebCrawler.Lib {
 
             do {
                 await ProcessQueue();
-
             } while (SitesInQueue());
 
             return visitedPages;
@@ -54,14 +53,12 @@ namespace WebCrawler.Lib {
         }
 
         public async Task ProcessQueue() {
-            // Uri target = pagesToVisit.();
             bool success = pagesToVisit.TryDequeue(out Uri target);
             if (NotAlreadyVisited(target))
                 await ProcessUri(target);
         }
 
         private async Task ProcessUri(Uri target) {
-            // visitedPages.Add(target.AbsoluteUri, new Byte);
             visitedPages.TryAdd(target.AbsoluteUri, new byte());
 
             Page page = await BuildPage(target);
