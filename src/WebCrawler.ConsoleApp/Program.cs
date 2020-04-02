@@ -10,7 +10,7 @@ namespace WebCrawler.ConsoleApp {
         static async Task Main(string[] args) {
             var serviceProvider = new ServiceCollection()
                 .AddHttpClient()
-                .AddSingleton<IMapPrinter, FilePrinter>()
+                .AddSingleton<IMapPrinter, ConsolePrinter>()
                 .BuildServiceProvider();
 
             Crawler crawler = new Crawler(args[0], serviceProvider.GetService<IHttpClientFactory>(), serviceProvider.GetService<IMapPrinter>());
